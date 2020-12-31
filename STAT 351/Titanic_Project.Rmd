@@ -1,0 +1,83 @@
+---
+title: "HW5 338"
+output: html_document
+---
+
+
+```{r}
+
+train=read.csv("C:/Users/kpiaz/Documents/Senior Year Semester 1/STAT 338/titanic/train.csv")
+
+test=read.csv("C:/Users/kpiaz/Documents/Senior Year Semester 1/STAT 338/titanic/test.csv")
+
+```
+
+
+
+```{r}
+library(tree)
+
+### clean training dataset
+
+#making sex into binary 
+train$Sex <- factor(train$Sex)
+
+
+train$Fare[train$Fare == 0] = median(train$Fare)
+test$Fare[test$Fare == 0] = median(test$Fare)
+#
+
+
+#any person who has more than 1 sibling. If they have more than 1 sibling, they are likely to
+#under 18 on the titanic, whereas if they only have 1 that could be a sibling or a spouse.
+train$MultSib <- as.numeric(train$SibSp > 1)
+train$SibSp <- as.numeric(train$SibSp == 1)
+
+### impute missing age data
+
+# split dataset into missing vs complete
+trainComplete <- train[!is.na(train$Age),]
+trainMissing <- train[is.na(train$Age),]
+
+# create linear model to impute age
+
+
+AgeModel <- lm(Age ~ Sex + SibSp + MultSib + Fare + Pclass, data = train)
+
+summary(AgeModel)
+
+# use regression model to impute age of missing observations
+AgePredict <- predict(AgeModel, newdata=trainMissing, type='response')
+AgePredict <- round(AgePredict, digits = 0)
+summary(AgePredict)
+
+
+# insert predicted values into missing observations
+trainMissing$Age <- AgePredict
+
+# rejoin missing and complete observations
+train <- rbind(trainMissing, trainComplete)
+
+
+
+tree_mod <- tree(as.factor(Survived)~ Age+Pclass +Fare+Parch+Sex,data = train)
+summary(tree_mod)
+plot(tree_mod)
+text(tree_mod)
+tests <- cv.tree(tree_mod,,prune.tree, K = 10)
+plot(tests$size,tests$dev)
+
+
+```
+
+
+```{r}
+library(randomForest)
+
+rfCV <- randomForest(as.factor(Survived) ~ Age + Sex + Parch+  Pclass + Fare, data = train, method = "class")
+rfCV
+
+#OOB estimate of  error rate: 16.27%
+
+```
+
