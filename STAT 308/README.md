@@ -1,1 +1,1 @@
-o	Created models using logistic regression in R that had ROC curves of 94.5 and used variable selection techniques such as forward/backwards selection, and stepwise regression to predict if heart disease was present in patients. The ROCR package is necessary to run this code in R.
+o	Created models using logistic regression in R that had ROC curves of 94.5 and used variable selection techniques such as forward/backwards selection, and stepwise regression to predict if heart disease was present in patients. The "ROCR" package is necessary to run this code in R.
