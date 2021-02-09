@@ -1,1 +1,1 @@
-Predicted survival status of passengers on the Titanic using Random Forests in R, imputed missing data using regression techniques, and derived new variables. This R code requires the packages "tree" and "randomforest". 
+Predicted survival status of passengers on the Titanic using Random Forests in R, imputed missing data using regression techniques, and derived new variables. This R code requires the packages "tree" and "randomForest". 
